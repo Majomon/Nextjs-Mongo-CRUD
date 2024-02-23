@@ -13,7 +13,6 @@ export async function GET(request, { params }) {
         { status: 404 }
       );
     }
-
     return NextResponse.json(taskFound);
   } catch (error) {
     return NextResponse.json(error.message, {
@@ -26,6 +25,16 @@ export function DELETE(request, { params }) {
   return NextResponse.json({ message: `Eliminando tarea ${params.id}` });
 }
 
-export function PUT(request, { params }) {
-  return NextResponse.json({ message: `Actualizando tarea ${params.id}` });
+export async function PUT(request, { params }) {
+  try {
+    const data = await request.json();
+    const taskUpdate = await Task.findByIdAndUpdate(params.id, data, {
+      new: true,
+    });
+    return NextResponse.json(taskUpdate);
+  } catch (error) {
+    return NextResponse.json(error.message, {
+      status: 400,
+    });
+  }
 }
